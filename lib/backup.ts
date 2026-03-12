@@ -2,6 +2,8 @@
 import { generateSalt, deriveKey, encrypt, decrypt } from '@/lib/crypto'
 import type { Note, BackupFile } from '@/types'
 
+// Notes passed to createBackup should have PLAINTEXT content.
+// The backup encrypts the entire Note[] with the backup password.
 export async function createBackup(notes: Note[], password: string): Promise<BackupFile> {
   const salt = generateSalt()
   const key = await deriveKey(password, salt)
@@ -13,6 +15,7 @@ export async function createBackup(notes: Note[], password: string): Promise<Bac
   }
 }
 
+// Returns Note[] with PLAINTEXT content.
 export async function restoreBackup(backup: BackupFile, password: string): Promise<Note[]> {
   const key = await deriveKey(password, backup.salt)
   return JSON.parse(await decrypt(backup.notes, key)) as Note[]

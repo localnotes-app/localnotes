@@ -10,12 +10,8 @@ import { useCrypto } from '@/context/CryptoContext'
 import { useNotes } from '@/context/NotesContext'
 import { getAllNotes, saveNote } from '@/lib/storage'
 import { createBackup, downloadBackup, readBackupFile, restoreBackup } from '@/lib/backup'
+import type { Note } from '@/types'
 
-// Design note: exported notes have content that is already AES-256-GCM encrypted under the
-// user's master key. The backup layer adds a second encryption with the backup password.
-// Imported notes are stored as-is (still master-key-encrypted) — they are only readable
-// on a device that knows the original master key. This is intentional: backups preserve
-// the encrypted blobs verbatim, so the master key remains the only path to plaintext.
 export function BackupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { key } = useCrypto()
   const { notes } = useNotes()
@@ -28,8 +24,20 @@ export function BackupModal({ open, onClose }: { open: boolean; onClose: () => v
 
   async function handleExport() {
     if (!exportPassword) { alert('Enter a password for the backup.'); return }
+    if (!key) { alert('Vault is locked.'); return }
     const allNotes = await getAllNotes()
-    const backup = await createBackup(allNotes, exportPassword)
+    // Decrypt each note's content so the backup is portable across devices
+    const plaintextNotes: Note[] = await Promise.all(
+      allNotes.map(async n => {
+        try {
+          const { decrypt } = await import('@/lib/crypto')
+          return { ...n, content: await decrypt(n.content, key) }
+        } catch {
+          return { ...n, content: '' }
+        }
+      })
+    )
+    const backup = await createBackup(plaintextNotes, exportPassword)
     downloadBackup(backup)
     setExportPassword('')
   }
@@ -37,14 +45,19 @@ export function BackupModal({ open, onClose }: { open: boolean; onClose: () => v
   async function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; if (!file) return
     if (!importPassword) { setImportError('Enter the backup password first.'); return }
+    if (!key) { setImportError('Vault is locked.'); return }
     setLoading(true); setImportError(''); setImportSuccess('')
     try {
       const backup = await readBackupFile(file)
-      const restored = await restoreBackup(backup, importPassword)
+      const restoredPlaintext = await restoreBackup(backup, importPassword)
+      const { encrypt } = await import('@/lib/crypto')
       let imported = 0, updated = 0
-      for (const note of restored) {
+      for (const note of restoredPlaintext) {
+        // Re-encrypt the plaintext content under the current master key
+        const encContent = await encrypt(note.content, key)
+        const noteToSave: Note = { ...note, content: encContent }
         const exists = notes.some(n => n.id === note.id)
-        await saveNote(note)
+        await saveNote(noteToSave)
         if (exists) updated++; else imported++
       }
       setImportSuccess(`${imported} notes imported, ${updated} notes updated.`)
