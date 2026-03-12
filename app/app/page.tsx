@@ -3,6 +3,7 @@
 import { useCrypto } from '@/context/CryptoContext'
 import { SetupScreen } from '@/components/auth/SetupScreen'
 import { UnlockScreen } from '@/components/auth/UnlockScreen'
+import { AppShell } from '@/components/notes/AppShell'
 
 export default function AppPage() {
   const { isSetup, isUnlocked, isLoading } = useCrypto()
@@ -13,9 +14,5 @@ export default function AppPage() {
   )
   if (!isSetup) return <SetupScreen />
   if (!isUnlocked) return <UnlockScreen />
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <p className="text-[11px] font-mono text-[#444]">App shell coming soon…</p>
-    </div>
-  )
+  return <AppShell />
 }
