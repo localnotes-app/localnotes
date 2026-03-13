@@ -25,35 +25,41 @@ export function Preview({ content }: { content: string }) {
             p: ({ children }) => <p className="text-[13px] text-[#777] leading-[1.8] mb-4">{children}</p>,
             ul: ({ children }) => <ul className="mb-4 space-y-1 pl-0">{children}</ul>,
             ol: ({ children }) => <ol className="mb-4 space-y-1 list-decimal pl-5 text-[#777]">{children}</ol>,
-            li: ({ children, className }) => {
-              const isTask = className === 'task-list-item'
+            li: ({ children, className, node }) => {
+              const isTask = className?.includes('task-list-item')
               if (isTask) {
+                // Read checked state directly from hast AST — reliable across all react-markdown versions
+                const inputNode = (node as any)?.children?.find(
+                  (c: any) => c.type === 'element' && c.tagName === 'input'
+                )
+                const checked = inputNode?.properties?.checked === true
+                // Filter out the raw <input> element from children (react-markdown renders it too)
+                const filteredChildren = Array.isArray(children)
+                  ? children.filter((c: any) => {
+                      if (c && typeof c === 'object' && 'type' in c) {
+                        return (c as any).type !== 'input'
+                      }
+                      return true
+                    })
+                  : children
                 return (
                   <li className="flex items-start gap-2.5 text-[13px] text-[#777] leading-[1.7] list-none">
-                    {children}
+                    <span className={`inline-flex items-center justify-center w-[14px] h-[14px] rounded-[3px] border flex-shrink-0 mt-[3px] ${
+                      checked ? 'bg-[#f0f0f0] border-[#f0f0f0]' : 'bg-transparent border-[#333]'
+                    }`}>
+                      {checked && (
+                        <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                          <path d="M1 3.5L3.5 6L8 1" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </span>
+                    {filteredChildren}
                   </li>
                 )
               }
               return <li className="text-[13px] text-[#777] leading-[1.7] ml-5 list-disc marker:text-[#333]">{children}</li>
             },
-            input: ({ type, checked }) => {
-              if (type === 'checkbox') {
-                return (
-                  <span className={`inline-flex items-center justify-center w-[14px] h-[14px] rounded-[3px] border flex-shrink-0 mt-[3px] ${
-                    checked
-                      ? 'bg-[#f0f0f0] border-[#f0f0f0]'
-                      : 'bg-transparent border-[#333]'
-                  }`}>
-                    {checked && (
-                      <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-                        <path d="M1 3.5L3.5 6L8 1" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </span>
-                )
-              }
-              return <input type={type} readOnly />
-            },
+            input: () => null,
             a: ({ href, children }) => <a href={href} className="text-[#888] underline underline-offset-2 hover:text-[#f0f0f0] transition-colors" target="_blank" rel="noreferrer">{children}</a>,
             blockquote: ({ children }) => <blockquote className="border-l-2 border-[#2a2a2a] pl-4 text-[#555] italic my-4">{children}</blockquote>,
             hr: () => <hr className="border-[#1a1a1a] my-6" />,

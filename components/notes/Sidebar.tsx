@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useNotes } from '@/context/NotesContext'
 import { useCrypto } from '@/context/CryptoContext'
+import { useSync } from '@/context/SyncContext'
 import { SearchBox } from './SearchBox'
 import { TagFilter } from './TagFilter'
 import { NoteList } from './NoteList'
@@ -29,6 +30,13 @@ const LockIcon = () => (
   <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="6" width="10" height="7" rx="1.5"/>
     <path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6"/>
+  </svg>
+)
+const SyncIcon = ({ spinning }: { spinning?: boolean }) => (
+  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+    className={spinning ? 'animate-spin' : ''}>
+    <path d="M1 7a6 6 0 0 1 10.7-3.7M13 7a6 6 0 0 1-10.7 3.7"/>
+    <path d="M11.7 1v2.3H9.4M2.3 13v-2.3H4.6"/>
   </svg>
 )
 
@@ -67,6 +75,7 @@ interface SidebarProps {
 export function Sidebar({ searchInputRef, onOpenBackup }: SidebarProps) {
   const { createNote } = useNotes()
   const { lock } = useCrypto()
+  const { canSync, status, triggerSync } = useSync()
   const [searchOpen, setSearchOpen] = useState(true)
 
   return (
@@ -84,6 +93,12 @@ export function Sidebar({ searchInputRef, onOpenBackup }: SidebarProps) {
           <IconBtn onClick={onOpenBackup} title="Backup / Restore (⌘⇧B)">
             <BackupIcon />
           </IconBtn>
+          {canSync && (
+            <IconBtn onClick={triggerSync} title="Sync"
+              active={status === 'synced'}>
+              <SyncIcon spinning={status === 'syncing'} />
+            </IconBtn>
+          )}
           <IconBtn onClick={lock} title="Lock vault">
             <LockIcon />
           </IconBtn>

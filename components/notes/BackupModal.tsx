@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useCrypto } from '@/context/CryptoContext'
 import { useNotes } from '@/context/NotesContext'
+import { useSync } from '@/context/SyncContext'
 import { getAllNotes, saveNote } from '@/lib/storage'
 import { createBackup, downloadBackup, readBackupFile, restoreBackup } from '@/lib/backup'
 import type { Note } from '@/types'
@@ -15,6 +16,7 @@ import type { Note } from '@/types'
 export function BackupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { key } = useCrypto()
   const { notes } = useNotes()
+  const { canSync, autoSync, setAutoSync, status, lastSyncedAt } = useSync()
   const [exportPassword, setExportPassword] = useState('')
   const [importPassword, setImportPassword] = useState('')
   const [importError, setImportError] = useState('')
@@ -119,6 +121,39 @@ export function BackupModal({ open, onClose }: { open: boolean; onClose: () => v
             {importError && <p className="text-[11px] text-red-400 mt-2">{importError}</p>}
             {importSuccess && <p className="text-[11px] text-green-500 mt-2">{importSuccess}</p>}
           </div>
+
+          {/* Auto-Sync — only visible on native platforms */}
+          {canSync && (
+            <>
+              <div className="border-t border-[#1e1e1e]" />
+              <div>
+                <p className="text-[10px] font-mono text-[#333] uppercase tracking-wider mb-2">Auto-Sync</p>
+                <p className="text-[11px] text-[#444] mb-3 leading-relaxed">
+                  Automatically save encrypted backups to your Documents folder.
+                  Sync between devices via iCloud Drive, Google Drive, or Dropbox.
+                </p>
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={autoSync}
+                      onChange={e => setAutoSync(e.target.checked)}
+                      className="accent-[#f0f0f0] w-3.5 h-3.5"
+                    />
+                    <span className="text-[12px] text-[#888]">Enable auto-sync</span>
+                  </label>
+                  <span className="text-[10px] font-mono text-[#333]">
+                    {status === 'syncing' && 'Syncing...'}
+                    {status === 'synced' && 'Synced'}
+                    {status === 'error' && 'Error'}
+                    {status === 'idle' && lastSyncedAt && (
+                      <>Last: {new Date(lastSyncedAt).toLocaleTimeString()}</>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
 
         </div>
       </DialogContent>

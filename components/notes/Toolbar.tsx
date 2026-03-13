@@ -83,8 +83,9 @@ function TagEditor({ noteId }: { noteId: string }) {
         />
       ) : (
         <button onClick={() => setOpen(true)}
-          className="text-[10px] font-mono text-[#2a2a2a] hover:text-[#555] transition-colors">
-          + tag
+          className="inline-flex items-center gap-1 text-[10px] font-mono text-[#383838] hover:text-[#777] border border-[#1e1e1e] hover:border-[#2a2a2a] rounded-[3px] px-1.5 py-px transition-colors">
+          <svg width="7" height="7" viewBox="0 0 7 7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3.5 1v5M1 3.5h5"/></svg>
+          tag
         </button>
       )}
     </div>
