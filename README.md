@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+  <img src="public/icons/icon-192.png" width="80" alt="localnotes icon" />
+</p>
 
-## Getting Started
+<h1 align="center">localnotes</h1>
 
-First, run the development server:
+<p align="center">
+  Encrypted notes, locally yours.<br />
+  <strong>No accounts. No servers. No tracking.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/localnotes-app/localnotes/actions"><img src="https://github.com/localnotes-app/localnotes/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/encryption-AES--256--GCM-green.svg" alt="AES-256-GCM" />
+  <img src="https://img.shields.io/badge/offline-100%25-brightgreen.svg" alt="100% Offline" />
+</p>
+
+---
+
+## What is localnotes?
+
+localnotes is an encrypted, offline-first Markdown note-taking app that runs entirely in your browser. Everything is encrypted with AES-256-GCM using the Web Crypto API. Your notes never leave your device.
+
+## Features
+
+- **AES-256-GCM encryption** — note content encrypted at rest in IndexedDB
+- **100% offline** — install as PWA, works without internet
+- **Markdown editor** — headings, lists, checkboxes, code blocks, tables, blockquotes
+- **KaTeX math** — inline `$...$` and block `$$...$$` rendering
+- **Syntax highlighting** — code blocks with language detection
+- **Tags + full-text search** — organize and find notes instantly
+- **PDF + JSON export** — export individual notes
+- **Encrypted backups** — export/import `.localnotes` backup files
+- **Keyboard shortcuts** — `Cmd+N`, `Cmd+K`, `Cmd+P`, and more
+- **Dark & light mode** — system default with manual toggle
+
+## Install
+
+localnotes is a Progressive Web App (PWA). Visit the app URL and install it:
+
+| Platform | How to install |
+|----------|---------------|
+| **iOS (Safari)** | Tap Share (□↑) → "Add to Home Screen" |
+| **Android (Chrome)** | Tap menu (⋮) → "Add to Home Screen" |
+| **Desktop (Chrome/Edge)** | Click install icon in address bar → "Install" |
+
+After installation, the app works fully offline.
+
+## Development
 
 ```bash
+# Clone
+git clone https://github.com/localnotes-app/localnotes.git
+cd localnotes
+
+# Install dependencies
+npm install
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Run tests
+npm run test:run
+
+# Build for production (static export)
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build static export to `out/` |
+| `npm run preview` | Preview production build locally |
+| `npm run test` | Run tests in watch mode |
+| `npm run test:run` | Run tests once |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
+```
+app/              Next.js App Router routes
+  page.tsx        Landing page
+  app/page.tsx    Notes app (client-side only)
+  manifest.ts     PWA manifest
+  sw.ts           Service worker (Serwist)
 
-To learn more about Next.js, take a look at the following resources:
+components/
+  ui/             shadcn/ui components
+  auth/           Setup + Unlock screens
+  notes/          App shell, editor, preview, sidebar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+context/
+  CryptoContext   Password → PBKDF2 → CryptoKey (in-memory)
+  NotesContext    CRUD operations with auto-encrypt/decrypt
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+lib/
+  crypto.ts       AES-256-GCM encrypt/decrypt, PBKDF2 key derivation
+  storage.ts      IndexedDB via idb
+  backup.ts       Encrypted backup export/import
+  export.ts       PDF + JSON export
+```
 
-## Deploy on Vercel
+### Security model
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Key derivation:** PBKDF2 (SHA-256, 310,000 iterations)
+- **Encryption:** AES-256-GCM with random 12-byte IV per operation
+- **CryptoKey:** Non-extractable, held in memory only
+- **No recovery:** Forgotten password = permanent data loss (by design)
+- **Plaintext fields:** Title, tags, and timestamps are not encrypted (trade-off for usability)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+[MIT](LICENSE) &copy; 2026 Justus W&auml;chter

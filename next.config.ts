@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next'
 import withSerwistInit from '@serwist/next'
 
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+
 const withSerwist = withSerwistInit({
   swSrc: 'app/sw.ts',
   swDest: 'public/sw.js',
@@ -8,7 +10,9 @@ const withSerwist = withSerwistInit({
 })
 
 const nextConfig: NextConfig = {
-  turbopack: {},
+  output: 'export',
+  images: { unoptimized: true },
+  basePath: isGitHubPages ? '/localnotes' : '',
 }
 
 export default withSerwist(nextConfig)

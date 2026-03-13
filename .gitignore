@@ -36,6 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# serwist service worker (generated at build time)
+public/sw.js
+
+# capacitor native projects (generated)
+/android/
+/ios/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
