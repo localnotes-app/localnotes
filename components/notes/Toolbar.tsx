@@ -12,6 +12,7 @@ interface ToolbarProps {
   onExportPDF: () => void
   onExportJSON: () => void
   onDelete: () => void
+  onToggleSidebar?: () => void
 }
 
 function TbBtn({ children, active, onClick, danger }: {
@@ -19,19 +20,19 @@ function TbBtn({ children, active, onClick, danger }: {
 }) {
   return (
     <button onClick={onClick}
-      className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-[4px] border transition-all whitespace-nowrap font-medium ${
+      className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-md border transition-all whitespace-nowrap font-medium ${
         active
-          ? 'bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0]'
+          ? 'bg-accent border-border text-foreground'
           : danger
-          ? 'bg-transparent border-transparent text-[#333] hover:border-[#333] hover:text-[#888]'
-          : 'bg-transparent border-transparent text-[#333] hover:border-[#1e1e1e] hover:text-[#777]'
+          ? 'bg-transparent border-transparent text-text-tertiary hover:border-border hover:text-destructive'
+          : 'bg-transparent border-transparent text-text-tertiary hover:border-border hover:text-text-secondary'
       }`}>
       {children}
     </button>
   )
 }
 
-const Div = () => <div className="w-px h-4 bg-[#1a1a1a] flex-shrink-0 mx-0.5" />
+const Div = () => <div className="w-px h-4 bg-border flex-shrink-0 mx-0.5 hidden sm:block" />
 
 // Tag editor: shows current tags, allows adding/removing
 function TagEditor({ noteId }: { noteId: string }) {
@@ -66,9 +67,9 @@ function TagEditor({ noteId }: { noteId: string }) {
     <div className="flex items-center gap-1 flex-wrap">
       {tags.map(t => (
         <span key={t}
-          className="inline-flex items-center gap-1 text-[10px] font-mono text-[#444] border border-[#1e1e1e] rounded-[3px] px-1.5 py-px group/tag hover:border-[#2a2a2a]">
+          className="inline-flex items-center gap-1 text-[10px] font-mono text-text-tertiary border border-border rounded-[3px] px-1.5 py-px group/tag hover:border-border-strong">
           {t}
-          <button onClick={() => removeTag(t)} className="text-[#2a2a2a] hover:text-[#888] leading-none">&times;</button>
+          <button onClick={() => removeTag(t)} className="text-text-muted hover:text-text-secondary leading-none">&times;</button>
         </span>
       ))}
       {open ? (
@@ -79,11 +80,11 @@ function TagEditor({ noteId }: { noteId: string }) {
           onKeyDown={addTag}
           onBlur={() => { setOpen(false); setInput('') }}
           placeholder="#tag"
-          className="text-[10px] font-mono bg-transparent border-b border-[#2a2a2a] outline-none text-[#777] placeholder:text-[#2a2a2a] w-16"
+          className="text-[10px] font-mono bg-transparent border-b border-border outline-none text-text-secondary placeholder:text-text-muted w-16"
         />
       ) : (
         <button onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-1 text-[10px] font-mono text-[#383838] hover:text-[#777] border border-[#1e1e1e] hover:border-[#2a2a2a] rounded-[3px] px-1.5 py-px transition-colors">
+          className="inline-flex items-center gap-1 text-[10px] font-mono text-text-muted hover:text-text-secondary border border-border hover:border-border-strong rounded-[3px] px-1.5 py-px transition-colors">
           <svg width="7" height="7" viewBox="0 0 7 7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3.5 1v5M1 3.5h5"/></svg>
           tag
         </button>
@@ -94,32 +95,54 @@ function TagEditor({ noteId }: { noteId: string }) {
 
 export function Toolbar({
   noteTitle, onTitleChange, showPreview, onTogglePreview,
-  showSyntax, onToggleSyntax, onExportPDF, onExportJSON, onDelete,
+  showSyntax, onToggleSyntax, onExportPDF, onExportJSON, onDelete, onToggleSidebar,
 }: ToolbarProps) {
   const { activeNote } = useNotes()
 
   return (
-    <div className="border-b border-[#141414] bg-[#080808]">
+    <div className="border-b border-border-subtle bg-surface">
       {/* Title row */}
-      <div className="px-5 pt-3.5 pb-1.5 flex items-center gap-2">
+      <div className="px-3 sm:px-5 pt-3 pb-1.5 flex items-center gap-2">
+        {/* Mobile hamburger */}
+        {onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="md:hidden flex-shrink-0 p-1 -ml-1 rounded-md text-text-tertiary hover:text-text-secondary hover:bg-accent/50 transition-colors"
+            title="Toggle sidebar"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="3" y1="4.5" x2="15" y2="4.5"/><line x1="3" y1="9" x2="15" y2="9"/><line x1="3" y1="13.5" x2="15" y2="13.5"/>
+            </svg>
+          </button>
+        )}
         <input value={noteTitle} onChange={e => onTitleChange(e.target.value)}
           placeholder="Untitled"
-          className="flex-1 min-w-0 bg-transparent border-none outline-none text-[15px] font-semibold text-[#f0f0f0] placeholder:text-[#222] font-sans tracking-tight" />
+          className="flex-1 min-w-0 bg-transparent border-none outline-none text-[15px] font-semibold text-foreground placeholder:text-text-muted font-sans tracking-tight" />
       </div>
       {/* Tags + actions row */}
-      <div className="px-4 pb-2.5 flex items-center gap-1 overflow-x-auto">
+      <div className="px-3 sm:px-4 pb-2.5 flex items-center gap-1 overflow-x-auto scrollbar-none">
         {activeNote && <TagEditor noteId={activeNote.id} />}
         <div className="flex-1" />
-        <TbBtn active={!showPreview && !showSyntax} onClick={() => { if (showPreview) onTogglePreview(); if (showSyntax) onToggleSyntax(); }}>Edit</TbBtn>
-        <TbBtn active={showPreview} onClick={onTogglePreview}>
-          Preview <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>P</Kbd></div>
+        <div className="hidden sm:flex items-center gap-1">
+          <TbBtn active={!showPreview && !showSyntax} onClick={() => { if (showPreview) onTogglePreview(); if (showSyntax) onToggleSyntax(); }}>Edit</TbBtn>
+          <TbBtn active={showPreview} onClick={onTogglePreview}>
+            Preview <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>P</Kbd></div>
+          </TbBtn>
+          <TbBtn active={showSyntax} onClick={onToggleSyntax}>
+            Syntax <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>?</Kbd></div>
+          </TbBtn>
+          <Div />
+        </div>
+        <TbBtn onClick={onExportPDF}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2v6M3.5 5.5L6 8l2.5-2.5M2 10h8"/>
+          </svg>
+          <span className="hidden sm:inline">PDF</span>
         </TbBtn>
-        <TbBtn active={showSyntax} onClick={onToggleSyntax}>
-          Syntax <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>?</Kbd></div>
+        <TbBtn onClick={onExportJSON}>
+          <span className="hidden sm:inline">JSON ↓</span>
+          <span className="sm:hidden text-[10px]">{ }</span>
         </TbBtn>
-        <Div />
-        <TbBtn onClick={onExportPDF}>PDF ↓</TbBtn>
-        <TbBtn onClick={onExportJSON}>JSON ↓</TbBtn>
         <Div />
         <TbBtn onClick={onDelete} danger>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

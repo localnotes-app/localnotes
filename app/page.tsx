@@ -30,60 +30,60 @@ const INSTALL = [
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-black text-[#f0f0f0] font-sans">
+    <main className="min-h-screen bg-background text-foreground font-sans">
       {/* Nav */}
-      <nav className="border-b border-[#1e1e1e] px-6 py-4">
+      <nav className="border-b border-border px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <span className="text-[13px] font-semibold tracking-tight">localnotes</span>
-          <Link href="/app" className="text-[12px] text-[#555] hover:text-[#f0f0f0] transition-colors font-mono">
+          <Link href="/app" className="text-[12px] text-text-tertiary hover:text-foreground transition-colors font-mono">
             Open app →
           </Link>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-16">
-        <h1 className="text-[40px] font-semibold tracking-tight leading-tight mb-4">
+      <section className="max-w-3xl mx-auto px-6 pt-16 sm:pt-24 pb-12 sm:pb-16">
+        <h1 className="text-3xl sm:text-[40px] font-semibold tracking-tight leading-tight mb-4">
           Notes that stay<br />on your device.
         </h1>
-        <p className="text-[15px] text-[#555] mb-10 max-w-xl leading-relaxed">
+        <p className="text-[14px] sm:text-[15px] text-text-tertiary mb-8 sm:mb-10 max-w-xl leading-relaxed">
           localnotes is a Markdown note-taking app that runs entirely in your browser.
           No accounts. No servers. No tracking. Everything encrypted with AES-256-GCM.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Link href="/app"
-            className="bg-[#f0f0f0] text-black px-5 py-2.5 rounded-[5px] text-[13px] font-semibold hover:bg-white transition-colors">
+            className="bg-primary text-primary-foreground px-5 py-2.5 rounded-md text-[13px] font-semibold hover:opacity-90 transition-opacity">
             Open app
           </Link>
           <a href="#install"
-            className="border border-[#2a2a2a] text-[#555] px-5 py-2.5 rounded-[5px] text-[13px] hover:text-[#f0f0f0] hover:border-[#444] transition-colors">
+            className="border border-border text-text-tertiary px-5 py-2.5 rounded-md text-[13px] hover:text-foreground hover:border-border-strong transition-colors">
             Install guide
           </a>
         </div>
       </section>
 
       {/* Features */}
-      <section className="max-w-4xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <section className="max-w-4xl mx-auto px-6 pb-16 sm:pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {FEATURES.map(f => (
-            <div key={f.title} className="border border-[#1e1e1e] rounded-[6px] p-4 hover:border-[#2a2a2a] transition-colors">
-              <h3 className="text-[12px] font-semibold text-[#f0f0f0] mb-1.5">{f.title}</h3>
-              <p className="text-[11px] text-[#444] leading-relaxed">{f.desc}</p>
+            <div key={f.title} className="border border-border rounded-md p-4 hover:border-border-strong transition-colors">
+              <h3 className="text-[12px] font-semibold text-foreground mb-1.5">{f.title}</h3>
+              <p className="text-[11px] text-text-tertiary leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* How it works */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 border-t border-[#1e1e1e] pt-12">
+      <section className="max-w-3xl mx-auto px-6 pb-16 sm:pb-20 border-t border-border pt-10 sm:pt-12">
         <h2 className="text-[17px] font-semibold mb-8">How it works</h2>
         <div className="space-y-5">
           {HOW_IT_WORKS.map(([num, title, desc]) => (
             <div key={num} className="flex gap-4">
-              <span className="text-[10px] font-mono text-[#2a2a2a] mt-0.5 w-4 flex-shrink-0">{num}</span>
+              <span className="text-[10px] font-mono text-text-muted mt-0.5 w-4 flex-shrink-0">{num}</span>
               <div>
-                <div className="text-[13px] font-semibold text-[#f0f0f0] mb-1">{title}</div>
-                <p className="text-[12px] text-[#444] leading-relaxed">{desc}</p>
+                <div className="text-[13px] font-semibold text-foreground mb-1">{title}</div>
+                <p className="text-[12px] text-text-tertiary leading-relaxed">{desc}</p>
               </div>
             </div>
           ))}
@@ -91,16 +91,16 @@ export default function LandingPage() {
       </section>
 
       {/* Install guide */}
-      <section id="install" className="max-w-4xl mx-auto px-6 pb-24 border-t border-[#1e1e1e] pt-12">
+      <section id="install" className="max-w-4xl mx-auto px-6 pb-16 sm:pb-24 border-t border-border pt-10 sm:pt-12">
         <h2 className="text-[17px] font-semibold mb-8">Install guide</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {INSTALL.map(({ platform, steps }) => (
-            <div key={platform} className="border border-[#1e1e1e] rounded-[6px] p-4">
-              <h3 className="text-[12px] font-semibold text-[#f0f0f0] mb-3">{platform}</h3>
+            <div key={platform} className="border border-border rounded-md p-4">
+              <h3 className="text-[12px] font-semibold text-foreground mb-3">{platform}</h3>
               <ol className="space-y-2">
                 {steps.map((s, i) => (
-                  <li key={i} className="text-[11px] text-[#444] flex gap-2">
-                    <span className="font-mono text-[#2a2a2a] flex-shrink-0">{i + 1}.</span>
+                  <li key={i} className="text-[11px] text-text-tertiary flex gap-2">
+                    <span className="font-mono text-text-muted flex-shrink-0">{i + 1}.</span>
                     {s}
                   </li>
                 ))}
@@ -111,29 +111,29 @@ export default function LandingPage() {
       </section>
 
       {/* Screenshots */}
-      <section className="max-w-4xl mx-auto px-6 pb-20 border-t border-[#1e1e1e] pt-12">
+      <section className="max-w-4xl mx-auto px-6 pb-16 sm:pb-20 border-t border-border pt-10 sm:pt-12">
         <h2 className="text-[17px] font-semibold mb-6">Screenshots</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             ['Editor view', '/screenshots/editor.png'],
             ['Preview & KaTeX', '/screenshots/preview.png'],
           ].map(([label, src]) => (
-            <div key={label} className="border border-[#1e1e1e] rounded-[6px] overflow-hidden">
+            <div key={label} className="border border-border rounded-md overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={label} className="w-full object-cover bg-[#0a0a0a]" />
-              <p className="text-[10px] font-mono text-[#333] px-3 py-2">{label}</p>
+              <img src={src} alt={label} className="w-full object-cover bg-surface-inset" />
+              <p className="text-[10px] font-mono text-text-muted px-3 py-2">{label}</p>
             </div>
           ))}
         </div>
-        <p className="text-[10px] font-mono text-[#2a2a2a] mt-4">
+        <p className="text-[10px] font-mono text-text-muted mt-4">
           To add screenshots: take screenshots of the live app and place them at
           public/screenshots/editor.png and public/screenshots/preview.png
         </p>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#1e1e1e] px-6 py-6 text-center">
-        <p className="text-[10px] font-mono text-[#2a2a2a]">localnotes · open source · AES-256-GCM</p>
+      <footer className="border-t border-border px-6 py-6 text-center">
+        <p className="text-[10px] font-mono text-text-muted">localnotes · open source · AES-256-GCM</p>
       </footer>
     </main>
   )

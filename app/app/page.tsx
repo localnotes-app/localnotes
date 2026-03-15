@@ -8,8 +8,8 @@ import { AppShell } from '@/components/notes/AppShell'
 export default function AppPage() {
   const { isSetup, isUnlocked, isLoading } = useCrypto()
   if (isLoading) return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <span className="text-[11px] font-mono text-[#333]">loading…</span>
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <span className="text-[11px] font-mono text-text-muted">loading…</span>
     </div>
   )
   if (!isSetup) return <SetupScreen />

@@ -15,6 +15,7 @@ export function AppShell() {
   const [showPreview, setShowPreview] = useState(true)
   const [showSyntax, setShowSyntax] = useState(false)
   const [showBackup, setShowBackup] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false) // mobile sidebar toggle
   const [localTitle, setLocalTitle] = useState('')
   const [localContent, setLocalContent] = useState('')
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -26,6 +27,8 @@ export function AppShell() {
       prevId.current = activeNote?.id ?? null
       setLocalTitle(activeNote?.title ?? '')
       setLocalContent(activeNote ? (plainContent[activeNote.id] ?? '') : '')
+      // Close sidebar on mobile when a note is selected
+      setSidebarOpen(false)
     }
   }, [activeNote, plainContent])
 
@@ -72,9 +75,27 @@ export function AppShell() {
   ])
 
   return (
-    <div className="h-screen bg-black flex overflow-hidden">
-      <Sidebar searchInputRef={searchInputRef} onOpenBackup={() => setShowBackup(true)} />
+    <div className="h-screen bg-background flex overflow-hidden relative">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — always visible on desktop, slide-in on mobile */}
+      <div className={`
+        fixed inset-y-0 left-0 z-40 w-[280px] transform transition-transform duration-200 ease-out
+        md:relative md:z-0 md:w-[260px] md:min-w-[260px] md:translate-x-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <Sidebar searchInputRef={searchInputRef} onOpenBackup={() => setShowBackup(true)} />
+      </div>
+
       <BackupModal open={showBackup} onClose={() => setShowBackup(false)} />
+
+      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {activeNote ? (
           <>
@@ -86,6 +107,7 @@ export function AppShell() {
               onExportPDF={handleExportPDF}
               onExportJSON={handleExportJSON}
               onDelete={handleDelete}
+              onToggleSidebar={() => setSidebarOpen(s => !s)}
             />
             <div className="flex-1 flex overflow-hidden">
               <Editor content={localContent} onChange={handleContentChange} />
@@ -94,9 +116,19 @@ export function AppShell() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-[11px] font-mono text-[#2a2a2a]">
-              Select a note or press ⌘N
+          <div className="flex-1 flex flex-col items-center justify-center gap-3">
+            {/* Mobile menu button in empty state */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden mb-4 p-2 rounded-md border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+              title="Open sidebar"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+              </svg>
+            </button>
+            <p className="text-xs font-mono text-text-muted">
+              Select a note or press <span className="text-text-tertiary">⌘N</span>
             </p>
           </div>
         )}

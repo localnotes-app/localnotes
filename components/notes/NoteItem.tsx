@@ -32,19 +32,19 @@ export function NoteItem({ note }: { note: Note }) {
 
   return (
     <button onClick={() => setActiveNote(note)}
-      className={`w-full text-left px-3 py-2.5 rounded-[4px] mb-[1px] transition-colors group ${
-        active ? 'bg-[#111] ' : 'hover:bg-[#0d0d0d]'
+      className={`w-full text-left px-3 py-2.5 rounded-md mb-[1px] transition-colors group ${
+        active ? 'bg-accent' : 'hover:bg-accent/50'
       }`}>
       <div className="flex items-baseline justify-between gap-2 mb-0.5">
-        <div className={`text-[12px] font-medium truncate ${active ? 'text-[#f0f0f0]' : 'text-[#888]'}`}>
-          {note.title.trim() || <span className="italic text-[#333]">Untitled</span>}
+        <div className={`text-[12px] font-medium truncate ${active ? 'text-foreground' : 'text-text-secondary'}`}>
+          {note.title.trim() || <span className="italic text-text-muted">Untitled</span>}
         </div>
-        <div className={`text-[10px] font-mono flex-shrink-0 ${active ? 'text-[#444]' : 'text-[#2a2a2a]'}`}>
+        <div className={`text-[10px] font-mono flex-shrink-0 ${active ? 'text-text-tertiary' : 'text-text-muted'}`}>
           {fmt(note.updatedAt)}
         </div>
       </div>
       {preview && (
-        <div className={`text-[11px] leading-relaxed truncate ${active ? 'text-[#444]' : 'text-[#2a2a2a]'}`}>
+        <div className={`text-[11px] leading-relaxed truncate ${active ? 'text-text-tertiary' : 'text-text-muted'}`}>
           {preview}
         </div>
       )}
@@ -52,7 +52,7 @@ export function NoteItem({ note }: { note: Note }) {
         <div className="flex gap-1 flex-wrap mt-1.5">
           {note.tags.map(t => (
             <span key={t} className={`text-[9px] font-mono px-1.5 py-px rounded-sm border ${
-              active ? 'text-[#555] border-[#222]' : 'text-[#333] border-[#181818]'
+              active ? 'text-text-tertiary border-border' : 'text-text-muted border-border-subtle'
             }`}>{t}</span>
           ))}
         </div>
