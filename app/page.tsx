@@ -2,6 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { InstallButton } from '@/components/InstallButton'
 
+const basePath = process.env.GITHUB_PAGES === 'true' ? '/localnotes' : ''
+
 export const metadata: Metadata = {
   title: 'localnotes — Encrypted notes, locally yours',
   description: 'A fully local, encrypted note-taking PWA. No accounts. No servers. No tracking.',
@@ -125,8 +127,8 @@ export default function LandingPage() {
         <h2 className="text-[17px] font-semibold mb-6">Screenshots</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            ['Editor view', '/screenshots/editor.png'],
-            ['Preview & KaTeX', '/screenshots/preview.png'],
+            ['Editor view', `${basePath}/screenshots/editor.png`],
+            ['Preview & KaTeX', `${basePath}/screenshots/preview.png`],
           ].map(([label, src]) => (
             <div key={label} className="border border-border rounded-md overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -134,11 +136,6 @@ export default function LandingPage() {
               <p className="text-[10px] font-mono text-text-muted px-3 py-2">{label}</p>
             </div>
           ))}
-        </div>
-        <p className="text-[10px] font-mono text-text-muted mt-4">
-          To add screenshots: take screenshots of the live app and place them at
-          public/screenshots/editor.png and public/screenshots/preview.png
-        </p>
       </section>
 
       {/* Footer */}

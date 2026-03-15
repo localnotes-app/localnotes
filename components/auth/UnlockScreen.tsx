@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useCrypto } from '@/context/CryptoContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { AppIcon } from '@/components/AppIcon'
 
 export function UnlockScreen() {
   const { unlock } = useCrypto()
@@ -22,8 +23,13 @@ export function UnlockScreen() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
-        <h1 className="text-xl font-semibold text-foreground mb-1">localnotes</h1>
-        <p className="text-sm text-text-tertiary mb-8">Enter your password to unlock.</p>
+        <div className="flex items-center gap-3 mb-6">
+          <AppIcon size={36} />
+          <div>
+            <h1 className="text-xl font-semibold text-foreground leading-tight">localnotes</h1>
+            <p className="text-sm text-text-tertiary">Enter your password to unlock.</p>
+          </div>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">Password</label>

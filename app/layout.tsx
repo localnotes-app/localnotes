@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   title: 'localnotes — Encrypted notes, locally yours',
   description: 'A fully local, encrypted note-taking PWA. No accounts. No servers.',
   manifest: `${basePath}/manifest.json`,
+  icons: {
+    icon: `${basePath}/icons/icon.svg`,
+    apple: `${basePath}/icons/icon-192.png`,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
