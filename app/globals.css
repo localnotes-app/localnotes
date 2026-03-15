@@ -141,10 +141,10 @@
   --surface: oklch(0.105 0 0);
   --surface-elevated: oklch(0.14 0 0);
   --surface-inset: oklch(0.085 0 0);
-  --text-primary: oklch(0.93 0 0);
-  --text-secondary: oklch(0.60 0 0);
-  --text-tertiary: oklch(0.45 0 0);
-  --text-muted: oklch(0.30 0 0);
+  --text-primary: oklch(0.95 0 0);
+  --text-secondary: oklch(0.78 0 0);
+  --text-tertiary: oklch(0.55 0 0);
+  --text-muted: oklch(0.35 0 0);
   --border-subtle: oklch(1 0 0 / 8%);
   --border-strong: oklch(1 0 0 / 15%);
 }

@@ -8,6 +8,7 @@ import { SearchBox } from './SearchBox'
 import { TagFilter } from './TagFilter'
 import { NoteList } from './NoteList'
 import { Kbd } from '@/components/ui/kbd'
+import { useInstallPrompt } from '@/hooks/useInstallPrompt'
 
 // SVG Icons
 const SearchIcon = () => (
@@ -46,14 +47,15 @@ const SyncIcon = ({ spinning }: { spinning?: boolean }) => (
   </svg>
 )
 
-// SVG wordmark logo
+// SVG wordmark logo — doc + lock icon
 function Logo() {
   return (
     <div className="flex items-center gap-2">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <rect width="22" height="22" rx="5" className="fill-foreground/10"/>
-        <path d="M6 16V6l3.5 7L13 6v10" className="stroke-foreground" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-        <line x1="5.5" y1="16" x2="8.5" y2="16" className="stroke-foreground" strokeWidth="1.6" strokeLinecap="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" className="stroke-foreground" strokeWidth="2" strokeLinejoin="round" fill="none"/>
+        <path d="M14 2V8H20" className="stroke-foreground" strokeWidth="2" strokeLinejoin="round"/>
+        <rect x="9" y="13" width="6" height="5" rx="1" className="fill-foreground"/>
+        <path d="M10 13V11C10 10.17 10.67 9.5 11.5 9.5C12.33 9.5 13 10.17 13 11V13" className="stroke-foreground" strokeWidth="1.5" fill="none"/>
       </svg>
       <span className="text-[13px] font-semibold text-foreground tracking-tight">localnotes</span>
     </div>
@@ -84,6 +86,7 @@ export function Sidebar({ searchInputRef, onOpenBackup }: SidebarProps) {
   const { canSync, status, triggerSync } = useSync()
   const [searchOpen, setSearchOpen] = useState(true)
   const [isDark, setIsDark] = useState(true)
+  const { canInstall, install } = useInstallPrompt()
 
   useEffect(() => {
     // Persist and restore theme preference
@@ -140,6 +143,19 @@ export function Sidebar({ searchInputRef, onOpenBackup }: SidebarProps) {
       <TagFilter />
       <NoteList />
 
+      {/* Install banner */}
+      {canInstall && (
+        <div className="px-3 pt-2.5 pb-0">
+          <button onClick={install}
+            className="w-full border border-border rounded-md py-2 text-[11px] font-medium flex items-center justify-center gap-1.5 text-text-secondary hover:text-foreground hover:border-border-strong transition-colors">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2v6M3.5 5.5L6 8l2.5-2.5M2 10h8"/>
+            </svg>
+            Install App
+          </button>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="px-3 py-2.5 border-t border-border-subtle flex items-center gap-2">
         <button onClick={createNote}
@@ -148,7 +164,7 @@ export function Sidebar({ searchInputRef, onOpenBackup }: SidebarProps) {
             <line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/>
           </svg>
           New note
-          <div className="flex gap-0.5 ml-1">
+          <div className="hidden sm:flex gap-0.5 ml-1">
             <Kbd className="text-primary-foreground/50 border-primary-foreground/20 bg-primary-foreground/10">⌘</Kbd>
             <Kbd className="text-primary-foreground/50 border-primary-foreground/20 bg-primary-foreground/10">N</Kbd>
           </div>

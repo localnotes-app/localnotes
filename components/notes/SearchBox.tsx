@@ -32,7 +32,7 @@ export function SearchBox({ collapsed, inputRef }: SearchBoxProps) {
             </svg>
           </button>
         ) : (
-          <div className="flex gap-0.5 opacity-50"><Kbd>⌘</Kbd><Kbd>K</Kbd></div>
+          <div className="hidden sm:flex gap-0.5 opacity-50"><Kbd>⌘</Kbd><Kbd>K</Kbd></div>
         )}
       </div>
     </div>

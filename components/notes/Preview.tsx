@@ -8,11 +8,24 @@ import rehypeHighlight from 'rehype-highlight'
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github-dark.css'
 
-export function Preview({ content }: { content: string }) {
+interface PreviewProps {
+  content: string
+  onClose?: () => void
+}
+
+export function Preview({ content, onClose }: PreviewProps) {
   return (
     <div className="flex-1 flex flex-col min-w-0 border-r border-border-subtle overflow-hidden">
       <div className="px-3.5 py-2 border-b border-border-subtle bg-surface-inset flex-shrink-0 flex items-center gap-2">
         <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-[1px]">preview</span>
+        <div className="flex-1" />
+        {onClose && (
+          <button onClick={onClose} className="text-text-muted hover:text-text-secondary transition-colors p-0.5" title="Close preview">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/>
+            </svg>
+          </button>
+        )}
       </div>
       <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-5 sm:py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
         <ReactMarkdown

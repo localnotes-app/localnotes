@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { InstallButton } from '@/components/InstallButton'
 
 export const metadata: Metadata = {
   title: 'localnotes — Encrypted notes, locally yours',
@@ -34,7 +35,15 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="border-b border-border px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <span className="text-[13px] font-semibold tracking-tight">localnotes</span>
+          <div className="flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+              <path d="M14 2V8H20" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+              <rect x="9" y="13" width="6" height="5" rx="1" fill="currentColor"/>
+              <path d="M10 13V11C10 10.17 10.67 9.5 11.5 9.5C12.33 9.5 13 10.17 13 11V13" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+            <span className="text-[13px] font-semibold tracking-tight">localnotes</span>
+          </div>
           <Link href="/app" className="text-[12px] text-text-tertiary hover:text-foreground transition-colors font-mono">
             Open app →
           </Link>
@@ -55,6 +64,7 @@ export default function LandingPage() {
             className="bg-primary text-primary-foreground px-5 py-2.5 rounded-md text-[13px] font-semibold hover:opacity-90 transition-opacity">
             Open app
           </Link>
+          <InstallButton />
           <a href="#install"
             className="border border-border text-text-tertiary px-5 py-2.5 rounded-md text-[13px] hover:text-foreground hover:border-border-strong transition-colors">
             Install guide

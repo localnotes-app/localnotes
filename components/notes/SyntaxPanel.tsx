@@ -19,7 +19,7 @@ const MATH = [
 
 const SHORTCUTS: [string, string[]][] = [
   ['New note', ['⌘', 'N']], ['Search', ['⌘', 'K']],
-  ['Toggle preview', ['⌘', 'P']], ['Syntax ref', ['⌘', '?']],
+  ['Toggle preview', ['⌘', 'P']], ['Syntax ref', ['⌘', '/']],
   ['Export PDF', ['⌘', '⇧', 'P']], ['Backup', ['⌘', '⇧', 'B']],
   ['Bold', ['⌘', '⌥', 'B']], ['Italic', ['⌘', '⌥', 'I']],
 ]
@@ -33,7 +33,35 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
-export function SyntaxPanel() {
+interface SyntaxPanelProps {
+  inModal?: boolean
+}
+
+export function SyntaxPanel({ inModal }: SyntaxPanelProps = {}) {
+  if (inModal) {
+    // Simplified content for modal
+    return (
+      <div className="p-4">
+        <Section title="Markdown">
+          {MD.map(([syn, desc]) => (
+            <div key={syn} className="flex gap-3 mb-1.5">
+              <span className="font-mono text-[11px] text-text-secondary min-w-[100px] flex-shrink-0">{syn}</span>
+              <span className="text-[11px] text-text-tertiary">{desc}</span>
+            </div>
+          ))}
+        </Section>
+        <Section title="Math · KaTeX">
+          {MATH.map(([syn, desc]) => (
+            <div key={syn} className="flex gap-3 mb-1.5">
+              <span className="font-mono text-[11px] text-text-secondary min-w-[100px] flex-shrink-0">{syn}</span>
+              <span className="text-[11px] text-text-tertiary">{desc}</span>
+            </div>
+          ))}
+        </Section>
+      </div>
+    )
+  }
+
   return (
     <div className="flex-1 flex flex-col min-w-0 overflow-hidden max-w-[280px]">
       <div className="px-3.5 py-2 border-b border-border-subtle bg-surface-inset flex-shrink-0">

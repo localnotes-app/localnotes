@@ -15,8 +15,8 @@ interface ToolbarProps {
   onToggleSidebar?: () => void
 }
 
-function TbBtn({ children, active, onClick, danger }: {
-  children: React.ReactNode; active?: boolean; onClick?: () => void; danger?: boolean
+function TbBtn({ children, active, onClick, danger, className: extraClass }: {
+  children: React.ReactNode; active?: boolean; onClick?: () => void; danger?: boolean; className?: string
 }) {
   return (
     <button onClick={onClick}
@@ -26,13 +26,13 @@ function TbBtn({ children, active, onClick, danger }: {
           : danger
           ? 'bg-transparent border-transparent text-text-tertiary hover:border-border hover:text-destructive'
           : 'bg-transparent border-transparent text-text-tertiary hover:border-border hover:text-text-secondary'
-      }`}>
+      } ${extraClass ?? ''}`}>
       {children}
     </button>
   )
 }
 
-const Div = () => <div className="w-px h-4 bg-border flex-shrink-0 mx-0.5 hidden sm:block" />
+const Div = () => <div className="w-px h-4 bg-border flex-shrink-0 mx-0.5" />
 
 // Tag editor: shows current tags, allows adding/removing
 function TagEditor({ noteId }: { noteId: string }) {
@@ -123,25 +123,42 @@ export function Toolbar({
       <div className="px-3 sm:px-4 pb-2.5 flex items-center gap-1 overflow-x-auto scrollbar-none">
         {activeNote && <TagEditor noteId={activeNote.id} />}
         <div className="flex-1" />
-        <div className="hidden sm:flex items-center gap-1">
+
+        {/* Mobile action buttons — compact icons */}
+        <div className="flex md:hidden items-center gap-0.5">
+          <TbBtn active={showPreview} onClick={onTogglePreview}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
+              <path d="M1 6s2-4 5-4 5 4 5 4-2 4-5 4-5-4-5-4z"/><circle cx="6" cy="6" r="1.5"/>
+            </svg>
+          </TbBtn>
+          <TbBtn onClick={onToggleSyntax}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
+              <path d="M4 2L1 6l3 4M8 2l3 4-3 4"/>
+            </svg>
+          </TbBtn>
+          <Div />
+        </div>
+
+        {/* Desktop action buttons — with KBD hints */}
+        <div className="hidden md:flex items-center gap-1">
           <TbBtn active={!showPreview && !showSyntax} onClick={() => { if (showPreview) onTogglePreview(); if (showSyntax) onToggleSyntax(); }}>Edit</TbBtn>
           <TbBtn active={showPreview} onClick={onTogglePreview}>
             Preview <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>P</Kbd></div>
           </TbBtn>
           <TbBtn active={showSyntax} onClick={onToggleSyntax}>
-            Syntax <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>?</Kbd></div>
+            Syntax <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>/</Kbd></div>
           </TbBtn>
           <Div />
         </div>
+
         <TbBtn onClick={onExportPDF}>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 2v6M3.5 5.5L6 8l2.5-2.5M2 10h8"/>
           </svg>
           <span className="hidden sm:inline">PDF</span>
         </TbBtn>
-        <TbBtn onClick={onExportJSON}>
-          <span className="hidden sm:inline">JSON ↓</span>
-          <span className="sm:hidden text-[10px]">{ }</span>
+        <TbBtn onClick={onExportJSON} className="hidden sm:flex">
+          JSON ↓
         </TbBtn>
         <Div />
         <TbBtn onClick={onDelete} danger>
