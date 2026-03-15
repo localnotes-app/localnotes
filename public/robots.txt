@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://localnotes-app.github.io/localnotes/sitemap.xml
