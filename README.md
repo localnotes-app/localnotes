@@ -34,9 +34,9 @@
 </p>
 
 <p align="center">
-  <img src="public/screenshots/preview.png" width="600" alt="localnotes preview with KaTeX" />
+  <img src="public/screenshots/landing.png" width="600" alt="localnotes landing page" />
   <br />
-  <em>Preview — Rendered Markdown with KaTeX math equations</em>
+  <em>Landing page — Privacy-first encrypted notes</em>
 </p>
 
 ## Features
