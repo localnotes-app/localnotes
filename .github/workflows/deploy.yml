@@ -28,7 +28,7 @@ jobs:
       - run: npm run test:run
       - run: GITHUB_PAGES=true npm run build
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: out
 
