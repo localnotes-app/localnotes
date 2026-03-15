@@ -1,8 +1,7 @@
 // components/notes/WysiwygEditor.tsx
 'use client'
 import { useEffect, useRef } from 'react'
-import { Editor } from '@milkdown/core'
-import { defaultValueCtx } from '@milkdown/core'
+import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core'
 import { commonmark } from '@milkdown/preset-commonmark'
 import { gfm } from '@milkdown/preset-gfm'
 import { math } from '@milkdown/plugin-math'
@@ -30,22 +29,25 @@ function MilkdownEditor({ content, onChange, noteId }: WysiwygEditorProps) {
   useEditor((root) => {
     return Editor.make()
       .config((ctx) => {
+        // Mount editor into the <Milkdown> container
+        ctx.set(rootCtx, root)
         ctx.set(defaultValueCtx, contentRef.current)
-        ctx.set(listenerCtx, {
-          markdownUpdated: (_ctx: unknown, markdown: string, prevMarkdown: string) => {
-            if (markdown !== prevMarkdown) {
-              isInternalUpdate.current = true
-              onChangeRef.current(markdown)
-            }
-          },
-        } as any)
-        root.id = 'milkdown-editor'
       })
+      .use(listener)
       .use(commonmark)
       .use(gfm)
       .use(math)
       .use(history)
-      .use(listener)
+      .config((ctx) => {
+        // Configure listener AFTER .use(listener) so listenerCtx is injected
+        ctx.get(listenerCtx)
+          .markdownUpdated((_ctx, markdown, prevMarkdown) => {
+            if (markdown !== prevMarkdown) {
+              isInternalUpdate.current = true
+              onChangeRef.current(markdown)
+            }
+          })
+      })
   }, [])
 
   const [loading, getInstance] = useInstance()
@@ -61,22 +63,6 @@ function MilkdownEditor({ content, onChange, noteId }: WysiwygEditorProps) {
       }
     }
   }, [noteId, content, loading, getInstance])
-
-  // Sync content when it changes externally (not from our own onChange)
-  useEffect(() => {
-    if (isInternalUpdate.current) {
-      isInternalUpdate.current = false
-      return
-    }
-    // Don't update if we just switched notes — that's handled above
-    if (noteId !== prevNoteIdRef.current) return
-    // Only sync if editor exists and content is externally different
-    if (loading) return
-    const editor = getInstance()
-    if (!editor) return
-    // We skip external syncs to prevent cursor jumps during active editing.
-    // The listener already handles pushing editor changes outward.
-  }, [content, loading, getInstance, noteId])
 
   return (
     <div className="flex-1 flex flex-col min-w-0 border-r border-border-subtle overflow-hidden">
