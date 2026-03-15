@@ -136,6 +136,7 @@ export default function LandingPage() {
               <p className="text-[10px] font-mono text-text-muted px-3 py-2">{label}</p>
             </div>
           ))}
+        </div>
       </section>
 
       {/* Footer */}
