@@ -1,7 +1,7 @@
 // components/notes/WysiwygToolbar.tsx
 'use client'
 import { useCallback } from 'react'
-import { editorViewCtx } from '@milkdown/core'
+import { editorViewCtx, schemaCtx } from '@milkdown/core'
 import { useInstance } from '@milkdown/react'
 import { callCommand } from '@milkdown/utils'
 import {
@@ -81,6 +81,34 @@ export function WysiwygToolbar() {
     [loading, getInstance]
   )
 
+  // Task List: wrap in bullet list, then set checked attribute on list items
+  const insertTaskList = useCallback(() => {
+    if (loading) return
+    const editor = getInstance()
+    if (!editor) return
+
+    // First wrap in bullet list
+    editor.action(callCommand(wrapInBulletListCommand.key))
+
+    // Then set the list_item checked attribute to false to make it a task list
+    editor.action((ctx) => {
+      const view = ctx.get(editorViewCtx)
+      const { state, dispatch } = view
+      const { selection, tr } = state
+
+      // Find list_item nodes in the current selection
+      state.doc.nodesBetween(selection.from, selection.to, (node, pos) => {
+        if (node.type.name === 'list_item' && node.attrs.checked == null) {
+          tr.setNodeMarkup(pos, undefined, { ...node.attrs, checked: false })
+        }
+      })
+
+      dispatch(tr)
+      view.focus()
+    })
+  }, [loading, getInstance])
+
+  // Insert math via ProseMirror schema nodes
   const insertMath = useCallback(
     (block: boolean) => {
       if (loading) return
@@ -88,8 +116,10 @@ export function WysiwygToolbar() {
       if (!editor) return
       editor.action((ctx) => {
         const view = ctx.get(editorViewCtx)
+        const schema = ctx.get(schemaCtx)
         const { state, dispatch } = view
-        const { schema, tr } = state
+        const { tr } = state
+
         if (block) {
           const mathBlockType = schema.nodes['math_block']
           if (mathBlockType) {
@@ -109,12 +139,16 @@ export function WysiwygToolbar() {
     [loading, getInstance]
   )
 
-  // For task list: wrap in bullet list first, the GFM plugin handles task list via input rule
-  const insertTaskList = useCallback(() => {
+  // Insert link with prompt for URL
+  const insertLink = useCallback(() => {
     if (loading) return
     const editor = getInstance()
     if (!editor) return
-    editor.action(callCommand(wrapInBulletListCommand.key))
+
+    const href = prompt('Enter URL:')
+    if (!href) return
+
+    editor.action(callCommand(toggleLinkCommand.key, { href }))
   }, [loading, getInstance])
 
   const iconSize = 14
@@ -177,7 +211,7 @@ export function WysiwygToolbar() {
       <ToolbarDivider />
 
       {/* Insert */}
-      <ToolbarButton onClick={() => cmd(toggleLinkCommand, { href: '' })} title="Link">
+      <ToolbarButton onClick={insertLink} title="Link">
         <Link size={iconSize} />
       </ToolbarButton>
       <ToolbarButton onClick={() => cmd(insertTableCommand, { row: 3, col: 3 })} title="Table">
