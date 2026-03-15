@@ -39,6 +39,12 @@
   <em>Landing page — Privacy-first encrypted notes</em>
 </p>
 
+<p align="center">
+  <img src="public/screenshots/preview.png" width="600" alt="localnotes KaTeX math preview" />
+  <br />
+  <em>Preview — KaTeX math equations rendered in real-time</em>
+</p>
+
 ## Features
 
 - 🔒 **AES-256-GCM encryption** — note content encrypted at rest in IndexedDB
