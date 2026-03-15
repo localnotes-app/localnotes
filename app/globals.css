@@ -160,3 +160,252 @@
     @apply font-sans;
   }
 }
+
+/* ── Milkdown / ProseMirror WYSIWYG styles ── */
+/* Typography mirrors Preview.tsx exactly for consistent appearance */
+
+.milkdown-wrapper .ProseMirror {
+  outline: none;
+  min-height: 100%;
+}
+
+.milkdown-wrapper .ProseMirror > * + * {
+  margin-top: 0;
+}
+
+/* Headings */
+.milkdown-wrapper .ProseMirror h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+  letter-spacing: -0.01em;
+}
+
+.milkdown-wrapper .ProseMirror h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.milkdown-wrapper .ProseMirror h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+.milkdown-wrapper .ProseMirror p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* Lists */
+.milkdown-wrapper .ProseMirror ul {
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+.milkdown-wrapper .ProseMirror ol {
+  margin-bottom: 1rem;
+  list-style: decimal;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.milkdown-wrapper .ProseMirror li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-left: 1.25rem;
+  list-style: disc;
+}
+
+.milkdown-wrapper .ProseMirror li::marker {
+  color: var(--text-muted);
+}
+
+.milkdown-wrapper .ProseMirror ol > li {
+  list-style: decimal;
+}
+
+/* Task list items */
+.milkdown-wrapper .ProseMirror li[data-list-type="task"],
+.milkdown-wrapper .ProseMirror li[data-item-type="task"] {
+  list-style: none;
+  margin-left: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.milkdown-wrapper .ProseMirror li[data-list-type="task"] > input[type="checkbox"],
+.milkdown-wrapper .ProseMirror li[data-item-type="task"] > input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.milkdown-wrapper .ProseMirror li[data-list-type="task"] > input[type="checkbox"]:checked,
+.milkdown-wrapper .ProseMirror li[data-item-type="task"] > input[type="checkbox"]:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Links */
+.milkdown-wrapper .ProseMirror a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 150ms;
+}
+
+.milkdown-wrapper .ProseMirror a:hover {
+  color: var(--foreground);
+}
+
+/* Blockquote */
+.milkdown-wrapper .ProseMirror blockquote {
+  border-left: 2px solid var(--border-strong);
+  padding-left: 1rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* Horizontal rule */
+.milkdown-wrapper .ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+/* Code blocks */
+.milkdown-wrapper .ProseMirror pre {
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.milkdown-wrapper .ProseMirror pre code {
+  display: block;
+  padding: 1rem;
+  font-size: 11px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* Inline code */
+.milkdown-wrapper .ProseMirror :not(pre) > code {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-size: 11px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  color: var(--text-secondary);
+}
+
+/* Strong & emphasis */
+.milkdown-wrapper .ProseMirror strong {
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  font-weight: 600;
+}
+
+.milkdown-wrapper .ProseMirror em {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Strikethrough */
+.milkdown-wrapper .ProseMirror del,
+.milkdown-wrapper .ProseMirror s {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+/* Tables */
+.milkdown-wrapper .ProseMirror table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.milkdown-wrapper .ProseMirror thead {
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.milkdown-wrapper .ProseMirror th {
+  text-align: left;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0.5rem 1rem 0.5rem 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.milkdown-wrapper .ProseMirror td {
+  color: var(--text-secondary);
+  padding: 0.375rem 1rem 0.375rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Math (KaTeX) */
+.milkdown-wrapper .ProseMirror .math-inline,
+.milkdown-wrapper .ProseMirror .math-display {
+  cursor: pointer;
+}
+
+.milkdown-wrapper .ProseMirror .math-inline.ProseMirror-selectednode,
+.milkdown-wrapper .ProseMirror .math-display.ProseMirror-selectednode {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ProseMirror selection */
+.milkdown-wrapper .ProseMirror .ProseMirror-selectednode {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ProseMirror placeholder */
+.milkdown-wrapper .ProseMirror p.is-editor-empty:first-child::before {
+  content: 'Start writing...';
+  color: var(--text-muted);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ProseMirror gapcursor */
+.milkdown-wrapper .ProseMirror .ProseMirror-gapcursor {
+  position: relative;
+}
+
+.milkdown-wrapper .ProseMirror .ProseMirror-gapcursor::after {
+  border-top: 1px solid var(--foreground);
+}

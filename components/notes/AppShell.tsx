@@ -4,15 +4,17 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useNotes } from '@/context/NotesContext'
 import { Sidebar } from './Sidebar'
 import { Toolbar } from './Toolbar'
-import { Editor } from './Editor'
+import { EditorSwitcher } from './EditorSwitcher'
 import { Preview } from './Preview'
 import { SyntaxPanel } from './SyntaxPanel'
 import { BackupModal } from './BackupModal'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useSwipeDismiss } from '@/hooks/useSwipeDismiss'
+import { useEditorMode } from '@/hooks/useEditorMode'
 
 export function AppShell() {
   const { activeNote, plainContent, updateNote, removeNote, createNote } = useNotes()
+  const { mode: editorMode, toggle: toggleEditorMode, setMode: setEditorMode } = useEditorMode()
   const [showPreview, setShowPreview] = useState(true)
   const [showSyntax, setShowSyntax] = useState(false)
   const [showBackup, setShowBackup] = useState(false)
@@ -70,6 +72,10 @@ export function AppShell() {
     exportToJSON(localTitle || 'Untitled', localContent)
   }, [activeNote, localTitle, localContent])
 
+  const handleForceRaw = useCallback(() => {
+    setEditorMode('raw')
+  }, [setEditorMode])
+
   // Changed ⌘? to ⌘/ to avoid browser conflict (⌘? = ⌘⇧/ which triggers browser help)
   useKeyboardShortcuts([
     { key: 'n', meta: true, shift: false, alt: false, handler: createNote },
@@ -78,6 +84,7 @@ export function AppShell() {
     { key: '/', meta: true, shift: false, alt: false, handler: () => setShowSyntax(s => !s) },
     { key: 'p', meta: true, shift: true, alt: false, handler: handleExportPDF },
     { key: 'b', meta: true, shift: true, alt: false, handler: () => setShowBackup(true) },
+    { key: 'e', meta: true, shift: false, alt: false, handler: toggleEditorMode },
   ])
 
   return (
@@ -130,6 +137,7 @@ export function AppShell() {
               onTitleChange={handleTitleChange}
               showPreview={showPreview} onTogglePreview={() => setShowPreview(p => !p)}
               showSyntax={showSyntax} onToggleSyntax={() => setShowSyntax(s => !s)}
+              editorMode={editorMode} onToggleEditorMode={toggleEditorMode}
               onExportPDF={handleExportPDF}
               onExportJSON={handleExportJSON}
               onDelete={handleDelete}
@@ -137,7 +145,13 @@ export function AppShell() {
             />
             {/* Desktop: side-by-side. Mobile: stacked vertically */}
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-              <Editor content={localContent} onChange={handleContentChange} />
+              <EditorSwitcher
+                mode={editorMode}
+                content={localContent}
+                onChange={handleContentChange}
+                noteId={activeNote?.id}
+                onForceRaw={handleForceRaw}
+              />
               {showPreview && (
                 <div className="md:flex-1 flex flex-col min-w-0 border-t md:border-t-0 max-h-[40vh] md:max-h-none overflow-hidden">
                   <Preview content={localContent} onClose={() => setShowPreview(false)} />

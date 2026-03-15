@@ -4,22 +4,25 @@ import { useState, useRef, useEffect } from 'react'
 import { Kbd } from '@/components/ui/kbd'
 import { useNotes } from '@/context/NotesContext'
 
+import type { EditorMode } from '@/hooks/useEditorMode'
+
 interface ToolbarProps {
   noteTitle: string
   onTitleChange: (t: string) => void
   showPreview: boolean; onTogglePreview: () => void
   showSyntax: boolean; onToggleSyntax: () => void
+  editorMode: EditorMode; onToggleEditorMode: () => void
   onExportPDF: () => void
   onExportJSON: () => void
   onDelete: () => void
   onToggleSidebar?: () => void
 }
 
-function TbBtn({ children, active, onClick, danger, className: extraClass }: {
-  children: React.ReactNode; active?: boolean; onClick?: () => void; danger?: boolean; className?: string
+function TbBtn({ children, active, onClick, danger, className: extraClass, onMouseEnter }: {
+  children: React.ReactNode; active?: boolean; onClick?: () => void; danger?: boolean; className?: string; onMouseEnter?: () => void
 }) {
   return (
-    <button onClick={onClick}
+    <button onClick={onClick} onMouseEnter={onMouseEnter}
       className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-md border transition-all whitespace-nowrap font-medium ${
         active
           ? 'bg-accent border-border text-foreground'
@@ -95,7 +98,8 @@ function TagEditor({ noteId }: { noteId: string }) {
 
 export function Toolbar({
   noteTitle, onTitleChange, showPreview, onTogglePreview,
-  showSyntax, onToggleSyntax, onExportPDF, onExportJSON, onDelete, onToggleSidebar,
+  showSyntax, onToggleSyntax, editorMode, onToggleEditorMode,
+  onExportPDF, onExportJSON, onDelete, onToggleSidebar,
 }: ToolbarProps) {
   const { activeNote } = useNotes()
 
@@ -141,6 +145,22 @@ export function Toolbar({
 
         {/* Desktop action buttons — with KBD hints */}
         <div className="hidden md:flex items-center gap-1">
+          {/* Raw / WYSIWYG toggle — hover-preloads WYSIWYG chunk */}
+          <TbBtn
+            active={editorMode === 'raw'}
+            onClick={editorMode !== 'raw' ? onToggleEditorMode : undefined}
+            onMouseEnter={() => { import('./WysiwygEditor') }}
+          >
+            Markdown
+          </TbBtn>
+          <TbBtn
+            active={editorMode === 'wysiwyg'}
+            onClick={editorMode !== 'wysiwyg' ? onToggleEditorMode : undefined}
+            onMouseEnter={() => { import('./WysiwygEditor') }}
+          >
+            WYSIWYG <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>E</Kbd></div>
+          </TbBtn>
+          <Div />
           <TbBtn active={!showPreview && !showSyntax} onClick={() => { if (showPreview) onTogglePreview(); if (showSyntax) onToggleSyntax(); }}>Edit</TbBtn>
           <TbBtn active={showPreview} onClick={onTogglePreview}>
             Preview <div className="flex gap-0.5"><Kbd>⌘</Kbd><Kbd>P</Kbd></div>
