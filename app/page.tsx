@@ -3,10 +3,60 @@ import type { Metadata } from 'next'
 import { InstallButton } from '@/components/InstallButton'
 
 const basePath = process.env.GITHUB_PAGES === 'true' ? '/localnotes' : ''
+const siteUrl = 'https://localnotes-app.github.io/localnotes'
 
 export const metadata: Metadata = {
-  title: 'localnotes — Encrypted notes, locally yours',
-  description: 'A fully local, encrypted note-taking PWA. No accounts. No servers. No tracking.',
+  title: 'localnotes — Free Encrypted Note-Taking App | AES-256 Privacy',
+  description: 'localnotes is a free, open-source encrypted Markdown note-taking app. AES-256-GCM encryption, 100% offline PWA, KaTeX math support. No accounts, no servers, no tracking. Your notes stay on your device.',
+  keywords: ['encrypted notes', 'local notes', 'privacy notes app', 'markdown editor', 'offline note taking', 'PWA notes', 'AES-256 encryption', 'open source notes', 'private notes', 'secure notes'],
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    title: 'localnotes — Free Encrypted Note-Taking App',
+    description: 'A fully local, encrypted Markdown note-taking PWA. No accounts, no servers, no tracking. AES-256-GCM encryption right in your browser.',
+    url: siteUrl,
+    siteName: 'localnotes',
+    images: [{ url: `${siteUrl}/screenshots/editor.png`, width: 1280, height: 800, alt: 'localnotes encrypted note editor' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'localnotes — Free Encrypted Note-Taking App',
+    description: 'Encrypted Markdown notes, 100% offline. No accounts, no servers. AES-256-GCM.',
+    images: [`${siteUrl}/screenshots/editor.png`],
+  },
+}
+
+// JSON-LD structured data for search engines
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'localnotes',
+  description: 'A fully local, encrypted Markdown note-taking Progressive Web App. AES-256-GCM encryption, 100% offline, no accounts needed.',
+  url: siteUrl,
+  applicationCategory: 'ProductivityApplication',
+  operatingSystem: 'Web, iOS, Android, Windows, macOS, Linux',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  featureList: [
+    'AES-256-GCM encryption',
+    'Offline-first PWA',
+    'Markdown editor with live preview',
+    'KaTeX math rendering',
+    'Syntax highlighting',
+    'Tag-based organization',
+    'Full-text search',
+    'PDF and JSON export',
+    'Encrypted backups',
+    'Dark and light mode',
+  ],
+  screenshot: `${siteUrl}/screenshots/editor.png`,
+  softwareVersion: '0.1.0',
+  license: 'https://opensource.org/licenses/MIT',
 }
 
 const FEATURES = [
@@ -34,6 +84,11 @@ const INSTALL = [
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-background text-foreground font-sans">
+      {/* JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Nav */}
       <nav className="border-b border-border px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">

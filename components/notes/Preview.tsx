@@ -5,8 +5,48 @@ import remarkMath from 'remark-math'
 import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github-dark.css'
+
+// Extend default sanitization schema to allow KaTeX and highlight.js classes
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    // Allow class on all elements (needed for KaTeX + highlight.js)
+    '*': [...(defaultSchema.attributes?.['*'] ?? []), 'className', 'class', 'style'],
+    // KaTeX uses specific elements with attributes
+    span: [...(defaultSchema.attributes?.['span'] ?? []), 'aria-hidden'],
+    math: ['xmlns', 'display'],
+    annotation: ['encoding'],
+  },
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    // KaTeX elements
+    'math', 'semantics', 'mrow', 'mi', 'mo', 'mn', 'msup', 'msub',
+    'mfrac', 'munderover', 'msqrt', 'mroot', 'mtext', 'mspace',
+    'mtable', 'mtr', 'mtd', 'annotation', 'menclose', 'mover', 'munder',
+    'msubsup', 'mprescripts', 'mmultiscripts', 'mpadded', 'mstyle',
+  ],
+  // Block dangerous protocols
+  protocols: {
+    ...defaultSchema.protocols,
+    href: ['http', 'https', 'mailto'],
+  },
+}
+
+// Validate URL to prevent javascript: protocol attacks
+function isSafeUrl(url: string | undefined): boolean {
+  if (!url) return false
+  try {
+    const parsed = new URL(url, 'https://example.com')
+    return ['http:', 'https:', 'mailto:'].includes(parsed.protocol)
+  } catch {
+    // Relative URLs are safe
+    return !url.startsWith('javascript:') && !url.startsWith('data:') && !url.startsWith('vbscript:')
+  }
+}
 
 interface PreviewProps {
   content: string
@@ -30,7 +70,7 @@ export function Preview({ content, onClose }: PreviewProps) {
       <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-5 sm:py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
         <ReactMarkdown
           remarkPlugins={[remarkMath, remarkGfm]}
-          rehypePlugins={[rehypeKatex, rehypeHighlight as never]}
+          rehypePlugins={[rehypeKatex, rehypeHighlight as never, [rehypeSanitize, sanitizeSchema]]}
           components={{
             h1: ({ children }) => <h1 className="text-xl sm:text-[22px] font-semibold text-foreground border-b border-border pb-3 mb-5 mt-0 tracking-tight">{children}</h1>,
             h2: ({ children }) => <h2 className="text-base sm:text-[16px] font-semibold text-foreground/90 mt-7 mb-3 tracking-tight">{children}</h2>,
@@ -71,7 +111,10 @@ export function Preview({ content, onClose }: PreviewProps) {
               return <li className="text-[13px] text-text-secondary leading-[1.7] ml-5 list-disc marker:text-text-muted">{children}</li>
             },
             input: () => null,
-            a: ({ href, children }) => <a href={href} className="text-text-secondary underline underline-offset-2 hover:text-foreground transition-colors" target="_blank" rel="noreferrer">{children}</a>,
+            a: ({ href, children }) => {
+              if (!isSafeUrl(href)) return <span className="text-destructive line-through">{children}</span>
+              return <a href={href} className="text-text-secondary underline underline-offset-2 hover:text-foreground transition-colors" target="_blank" rel="noreferrer noopener">{children}</a>
+            },
             blockquote: ({ children }) => <blockquote className="border-l-2 border-border-strong pl-4 text-text-tertiary italic my-4">{children}</blockquote>,
             hr: () => <hr className="border-border my-6" />,
             table: ({ children }) => <div className="overflow-x-auto mb-4"><table className="w-full text-[12px] border-collapse">{children}</table></div>,
