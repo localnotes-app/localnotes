@@ -29,35 +29,55 @@ export const metadata: Metadata = {
 }
 
 // JSON-LD structured data for search engines
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'localnotes',
-  description: 'A fully local, encrypted Markdown note-taking Progressive Web App. AES-256-GCM encryption, 100% offline, no accounts needed.',
-  url: siteUrl,
-  applicationCategory: 'ProductivityApplication',
-  operatingSystem: 'Web, iOS, Android, Windows, macOS, Linux',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'localnotes',
+    description: 'A fully local, encrypted Markdown note-taking Progressive Web App. AES-256-GCM encryption, 100% offline, no accounts needed.',
+    url: siteUrl,
+    applicationCategory: 'ProductivityApplication',
+    operatingSystem: 'Web, iOS, Android, Windows, macOS, Linux',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    featureList: [
+      'AES-256-GCM encryption',
+      'Offline-first PWA',
+      'Markdown editor with live preview',
+      'KaTeX math rendering',
+      'Syntax highlighting',
+      'Tag-based organization',
+      'Full-text search',
+      'PDF and JSON export',
+      'Encrypted backups',
+      'Dark and light mode',
+    ],
+    screenshot: `${siteUrl}/screenshots/editor.png`,
+    softwareVersion: '0.1.0',
+    license: 'https://opensource.org/licenses/MIT',
   },
-  featureList: [
-    'AES-256-GCM encryption',
-    'Offline-first PWA',
-    'Markdown editor with live preview',
-    'KaTeX math rendering',
-    'Syntax highlighting',
-    'Tag-based organization',
-    'Full-text search',
-    'PDF and JSON export',
-    'Encrypted backups',
-    'Dark and light mode',
-  ],
-  screenshot: `${siteUrl}/screenshots/editor.png`,
-  softwareVersion: '0.1.0',
-  license: 'https://opensource.org/licenses/MIT',
-}
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'App',
+        item: `${siteUrl}/app`,
+      },
+    ],
+  },
+]
 
 const FEATURES = [
   { title: 'AES-256 encrypted', desc: 'Every note is encrypted in your browser. Your master password never leaves your device.' },

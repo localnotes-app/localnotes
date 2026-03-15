@@ -40,6 +40,7 @@ export function Editor({ content, onChange }: EditorProps) {
         ref={ref} value={content} onChange={e => onChange(e.target.value)}
         onKeyDown={handleKeyDown} spellCheck={false}
         placeholder="Start writing in Markdown…"
+        aria-label="Note content editor"
         className="flex-1 p-4 sm:p-5 bg-transparent resize-none outline-none font-mono text-[12px] sm:text-[13px] leading-[1.9] text-text-secondary placeholder:text-text-muted caret-foreground scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border"
       />
     </div>

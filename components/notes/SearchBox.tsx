@@ -23,10 +23,11 @@ export function SearchBox({ collapsed, inputRef }: SearchBoxProps) {
           ref={inputRef}
           type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
           placeholder="Search…"
+          aria-label="Search notes"
           className="flex-1 bg-transparent border-none outline-none text-foreground text-[12px] placeholder:text-text-muted font-sans"
         />
         {searchQuery ? (
-          <button onClick={() => setSearchQuery('')} className="text-text-muted hover:text-text-secondary text-xs">
+          <button onClick={() => setSearchQuery('')} className="text-text-muted hover:text-text-secondary text-xs" aria-label="Clear search">
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/>
             </svg>

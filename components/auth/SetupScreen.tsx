@@ -39,16 +39,16 @@ export function SetupScreen() {
             <p className="text-sm text-text-tertiary">Set a master password to encrypt your notes.</p>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" aria-label="Create vault">
           <div>
-            <label className="block text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">Password</label>
-            <Input type="password" value={password} onChange={e => setPassword(e.target.value)}
+            <label htmlFor="setup-password" className="block text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">Password</label>
+            <Input id="setup-password" type="password" value={password} onChange={e => setPassword(e.target.value)}
               placeholder="Minimum 8 characters" autoFocus
               className="bg-surface-inset border-border text-foreground placeholder:text-text-muted" />
           </div>
           <div>
-            <label className="block text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">Confirm Password</label>
-            <Input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
+            <label htmlFor="setup-confirm" className="block text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">Confirm Password</label>
+            <Input id="setup-confirm" type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
               placeholder="Repeat password"
               className="bg-surface-inset border-border text-foreground placeholder:text-text-muted" />
           </div>

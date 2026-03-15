@@ -9,6 +9,7 @@ import { Preview } from './Preview'
 import { SyntaxPanel } from './SyntaxPanel'
 import { BackupModal } from './BackupModal'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { useSwipeDismiss } from '@/hooks/useSwipeDismiss'
 
 export function AppShell() {
   const { activeNote, plainContent, updateNote, removeNote, createNote } = useNotes()
@@ -21,6 +22,11 @@ export function AppShell() {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevId = useRef<string | null>(null)
   const searchInputRef = useRef<HTMLInputElement | null>(null)
+
+  const { ref: syntaxSwipeRef, handlers: syntaxSwipeHandlers } = useSwipeDismiss<HTMLDivElement>({
+    onDismiss: () => setShowSyntax(false),
+    direction: 'down',
+  })
 
   useEffect(() => {
     if (activeNote?.id !== prevId.current) {
@@ -75,7 +81,7 @@ export function AppShell() {
   ])
 
   return (
-    <div className="h-screen bg-background flex overflow-hidden relative">
+    <div className="h-screen bg-background flex overflow-hidden relative" role="main" aria-label="Notes application">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -99,12 +105,12 @@ export function AppShell() {
       {showSyntax && (
         <div className="md:hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setShowSyntax(false)} />
-          <div className="relative z-10 w-full max-w-sm mx-4 mb-4 sm:mb-0 bg-card border border-border rounded-xl max-h-[70vh] overflow-hidden flex flex-col shadow-2xl">
+          <div ref={syntaxSwipeRef} {...syntaxSwipeHandlers} className="relative z-10 w-full max-w-sm mx-4 mb-4 sm:mb-0 bg-card border border-border rounded-xl max-h-[70vh] overflow-hidden flex flex-col shadow-2xl">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between flex-shrink-0">
               <span className="text-[11px] font-mono text-text-tertiary uppercase tracking-[0.8px]">Syntax Reference</span>
-              <button onClick={() => setShowSyntax(false)} className="text-text-tertiary hover:text-foreground p-1">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/>
+              <button onClick={() => setShowSyntax(false)} className="text-text-tertiary hover:text-foreground p-2 -mr-1 rounded-md hover:bg-accent/50" aria-label="Close syntax reference">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
                 </svg>
               </button>
             </div>

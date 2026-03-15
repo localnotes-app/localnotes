@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+.next/
+
+# Development files
+.playwright-mcp/
+*.tsbuildinfo
+
+# Capacitor native
+android/
+ios/
+
+# Service worker (generated)
+public/sw.js
+
+# IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

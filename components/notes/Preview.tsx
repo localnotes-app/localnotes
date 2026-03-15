@@ -60,9 +60,9 @@ export function Preview({ content, onClose }: PreviewProps) {
         <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-[1px]">preview</span>
         <div className="flex-1" />
         {onClose && (
-          <button onClick={onClose} className="text-text-muted hover:text-text-secondary transition-colors p-0.5" title="Close preview">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/>
+          <button onClick={onClose} className="text-text-muted hover:text-text-secondary transition-colors p-1.5 -mr-1 rounded-md hover:bg-accent/50" title="Close preview" aria-label="Close preview">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
             </svg>
           </button>
         )}
